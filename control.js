@@ -1,8 +1,24 @@
 window.onload = init;
-var numeroOrden, numeroFolio, fechaRecepcionOrden, fechaEntregaOrden, nombreClienteOrden,
-    telefonoClienteOrden, vehiculoOrden, productosUsadosString, serviciosUsadosInput, descripcionOrden,
-    observacionesOrden, totalOrdenNueva, adelantoOrdenNueva, restanteOrdenNueva;
-var table1Full, table2Full, table3Full, table4Full, table5Full, table6Full;
+var numeroOrden,
+    numeroFolio,
+    fechaRecepcionOrden,
+    fechaEntregaOrden,
+    nombreClienteOrden,
+    telefonoClienteOrden,
+    vehiculoOrden,
+    productosUsadosString,
+    serviciosUsadosInput,
+    descripcionOrden,
+    observacionesOrden,
+    totalOrdenNueva,
+    adelantoOrdenNueva,
+    restanteOrdenNueva;
+var table1Full,
+    table2Full,
+    table3Full,
+    table4Full,
+    table5Full,
+    table6Full;
 var inlineMediaStyle = null;
 var todasLasOrdenes;
 var editarOrdenTrabajo = false;
@@ -76,11 +92,14 @@ function init() {
     document.getElementById("btnCrearOrden").onclick = crearOrden;
     document.getElementById("btnAgregar").onclick = agregarBtnAgregarClick;
     document.getElementById("btnBorrarOrden").onclick = borrarOrden;
-    document.getElementById("printBtn1").onclick = function() {
-        print1();
-    };
-    document.getElementById("printBtn2").onclick = function() {
-        print2();
+    // document.getElementById("printBtn1").onclick = function() {
+    //     print1();
+    // };
+    // document.getElementById("printBtn2").onclick = function() {
+    //     print2();
+    // };
+    document.getElementById("btnCrearNotaVenta").onclick = function() {
+        print3();
     };
 }
 // Print Nota de Garantia
@@ -89,7 +108,7 @@ function print1() {
     var newStyle = document.createElement('style');
     newStyle.setAttribute('type', 'text/css');
     newStyle.setAttribute('media', 'print');
-    newStyle.appendChild(document.createTextNode('@page { margin-top: 0; }#header, #myFooter, #topNav,#printOrdenTrabajo,#NotaGarantia{display: none !important; } #printDiv{ display: block !important;}'));
+    newStyle.appendChild(document.createTextNode('@page { margin-top: 0; }#header, #myFooter, #topNav,#printOrdenTrabajo,#printNotaVenta,#NotaGarantia{display: none !important; } #printDiv{ display: block !important;}'));
     if (inlineMediaStyle != null) {
         head.replaceChild(newStyle, inlineMediaStyle)
     } else {
@@ -98,7 +117,6 @@ function print1() {
     inlineMediaStyle = newStyle;
     window.print();
 
-
 }
 //Print Orden de trabajo
 function print2() {
@@ -106,7 +124,22 @@ function print2() {
     var newStyle = document.createElement('style');
     newStyle.setAttribute('type', 'text/css');
     newStyle.setAttribute('media', 'print');
-    newStyle.appendChild(document.createTextNode('@page { margin-top: 0; }#header, #myFooter, #topNav,#printNotaGarantia,#OrdenTrabajo{display: none !important; } #printDiv{ display: block !important;}'));
+    newStyle.appendChild(document.createTextNode('@page { margin-top: 0; }#header, #myFooter, #topNav,#printNotaGarantia,#printNotaVenta,#OrdenTrabajo{display: none !important; } #printDiv{ display: block !important;}'));
+    if (inlineMediaStyle != null) {
+        head.replaceChild(newStyle, inlineMediaStyle)
+    } else {
+        head.appendChild(newStyle);
+    }
+    inlineMediaStyle = newStyle;
+    window.print();
+}
+//Print Nota Venta
+function print3() {
+    var head = document.getElementsByTagName('head')[0];
+    var newStyle = document.createElement('style');
+    newStyle.setAttribute('type', 'text/css');
+    newStyle.setAttribute('media', 'print');
+    newStyle.appendChild(document.createTextNode('@page { margin-top: 0; }#header, #myFooter, #topNav,#printOrdenTrabajo,#printNotaGarantia,#NotaVenta{display: none !important; } #printDiv{ display: block !important;}'));
     if (inlineMediaStyle != null) {
         head.replaceChild(newStyle, inlineMediaStyle)
     } else {
@@ -147,7 +180,14 @@ function crearOrden() {
 
 function insertTableData(index) {
     var request = new XMLHttpRequest();
-    phpStrings = ["readProductos.php", "readProductos.php", "readServicios.php", "readOrdenes.php", "readOrdenes.php", "readOrdenes.php"];
+    phpStrings = [
+        "readProductos.php",
+        "readProductos.php",
+        "readServicios.php",
+        "readOrdenes.php",
+        "readOrdenes.php",
+        "readOrdenes.php"
+    ];
     if (index == 1) {
         mainTable = document.getElementById("mytable");
 
@@ -372,7 +412,6 @@ function myFunction(index) {
     }
 }
 
-
 function servicioEscojido(servicios, i) {
     var flag = false;
 
@@ -536,10 +575,9 @@ function handleClick(num, request, i) {
                 var cell2 = row.insertCell(1);
                 var cell3 = row.insertCell(2);
 
-                cell1.innerHTML ="<input type='checkbox' onclick= '' checked = 'true'>"
+                cell1.innerHTML = "<input type='checkbox' onclick= '' checked = 'true'>"
                 cell2.innerHTML = servicios[i];
                 for (var y = 0; y < mimo.data.length; y++) {
-
 
                     if (servicios[i] == mimo.data[y].nombre) {
                         cell3.innerHTML = mimo.data[y].meses;
@@ -559,17 +597,17 @@ function handleClick(num, request, i) {
             cell2.innerHTML = productos[i];
         }
 
-        document.getElementById("btn_aceptar_print_garantia").onclick = function () {
+        document.getElementById("btn_aceptar_print_garantia").onclick = function() {
             document.getElementById("printNombre").value = document.getElementById("nombrePrintGarantia").value;
             document.getElementById("printVehiculoGarantia").value = document.getElementById("vehiculoPrintGarantia").value;
             document.getElementById("printTotalGarantia").value = document.getElementById("totalPrintGarantia").value;
             document.getElementById("printNota").value = document.getElementById("notaPrintGarantia").value;
             // document.getElementById("printProductosGarantia").value = request.data[i].Productos;
             // document.getElementById("printServiciosGarantia").value = request.data[i].Servicios;
-            var sum=0;
-            for(var i = 1;i < table.rows.length;i++){
+            var sum = 0;
+            for (var i = 1; i < table.rows.length; i++) {
                 console.log(table.rows[i].cells[2].innerHTML);
-                sum +=Number(table.rows[i].cells[2].innerHTML);
+                sum += Number(table.rows[i].cells[2].innerHTML);
             }
             document.getElementById("printMesesGarantia").value = sum;
             // for(var i = 1;i < table2.rows.length;i++){
@@ -588,16 +626,13 @@ function borrarOrden() {
 
     var request = new XMLHttpRequest();
     // TODO: create deleteOrdenTrabajo.php
-    var mystring = "http://is2016.atwebpages.com/moflesyradiadores/removeOrdenTrabajo.php?nombre=" + nombreClienteOrden.value +
-        "&telefono=" + telefonoClienteOrden.value;
-    request.open("GET", "http://is2016.atwebpages.com/moflesyradiadores/removeOrdenTrabajo.php?nombre=" + nombreClienteOrden.value +
-        "&telefono=" + telefonoClienteOrden.value
-    );
+    var mystring = "http://is2016.atwebpages.com/moflesyradiadores/removeOrdenTrabajo.php?nombre=" + nombreClienteOrden.value + "&telefono=" + telefonoClienteOrden.value;
+    request.open("GET", "http://is2016.atwebpages.com/moflesyradiadores/removeOrdenTrabajo.php?nombre=" + nombreClienteOrden.value + "&telefono=" + telefonoClienteOrden.value);
     request.onload = function() {
         //location.reload();
         if (request.responseText)
             location.reload();
-    };
+        };
     request.send(null);
 }
 
@@ -605,25 +640,13 @@ function editarOrden(oldnom, oldtel) {
 
     var request = new XMLHttpRequest();
     // TODO: create editOrdenTrabajo.php
-    request.open("GET", "http://is2016.atwebpages.com/moflesyradiadores/editOrdenTrabajo.php?fechaEntrega=" + fechaEntregaOrden.value +
-        "&nombre=" + nombreClienteOrden.value +
-        "&telefono=" + telefonoClienteOrden.value +
-        "&vehiculo=" + vehiculoOrden.value +
-        "&servicios=" + serviciosUsadosInput.value +
-        "&productos=" + productosUsadosString.value +
-        "&descripcion=" + descripcionOrden.value +
-        "&observaciones=" + observacionesOrden.value +
-        "&adelanto=" + adelantoOrdenNueva.value +
-        "&restante=" + restanteOrdenNueva.value +
-        "&total=" + totalOrdenNueva.value +
-        "&oldnom=" + oldnom +
-        "&oldtel=" + oldtel);
+    request.open("GET", "http://is2016.atwebpages.com/moflesyradiadores/editOrdenTrabajo.php?fechaEntrega=" + fechaEntregaOrden.value + "&nombre=" + nombreClienteOrden.value + "&telefono=" + telefonoClienteOrden.value + "&vehiculo=" + vehiculoOrden.value + "&servicios=" + serviciosUsadosInput.value + "&productos=" + productosUsadosString.value + "&descripcion=" + descripcionOrden.value + "&observaciones=" + observacionesOrden.value + "&adelanto=" + adelantoOrdenNueva.value + "&restante=" + restanteOrdenNueva.value + "&total=" + totalOrdenNueva.value + "&oldnom=" + oldnom + "&oldtel=" + oldtel);
     request.onload = function() {
         if (request.responseText)
             location.reload();
-        //todasLasOrdenes = request.responseText;
-        //showAlertAgregado(request.responseText, 1);
-    };
+            //todasLasOrdenes = request.responseText;
+            //showAlertAgregado(request.responseText, 1);
+        };
     request.send(null);
 
 }
@@ -646,19 +669,7 @@ function agregarOrdenClick() {
     var total = totalOrdenNueva.value;
     var request = new XMLHttpRequest();
 
-    request.open("GET", "http://is2016.atwebpages.com/moflesyradiadores/addOrdenTrabajo.php?num_orden=" + num_orden +
-        "&folio=" + folio +
-        "&fechaEntrega=" + fecha_entrega +
-        "&nombre=" + nom_cliente +
-        "&telefono=" + tel_cliente +
-        "&vehiculo=" + vehiculo +
-        "&servicios=" + servicios +
-        "&productos=" + productos +
-        "&observaciones=" + observaciones +
-        "&descripcion=" + descripcion +
-        "&adelanto=" + adelanto +
-        "&restante=" + restante +
-        "&total=" + total);
+    request.open("GET", "http://is2016.atwebpages.com/moflesyradiadores/addOrdenTrabajo.php?num_orden=" + num_orden + "&folio=" + folio + "&fechaEntrega=" + fecha_entrega + "&nombre=" + nom_cliente + "&telefono=" + tel_cliente + "&vehiculo=" + vehiculo + "&servicios=" + servicios + "&productos=" + productos + "&observaciones=" + observaciones + "&descripcion=" + descripcion + "&adelanto=" + adelanto + "&restante=" + restante + "&total=" + total);
     request.onload = function() {
         //location.reload();
         todasLasOrdenes = request.responseText;
@@ -667,8 +678,6 @@ function agregarOrdenClick() {
     request.send(null);
 
 }
-
-
 
 function onClickSave() {
     localStorage.setItem("posicionTab", JSON.stringify(nombreTab));
@@ -729,7 +738,6 @@ function changeNavBarColors(indexA) {
         }
     }
 }
-
 
 function removerProductoClick() {
     var nomRemover = document.getElementById("nomProductoRemover").innerHTML;
